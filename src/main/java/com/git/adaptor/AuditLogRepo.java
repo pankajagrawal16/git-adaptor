@@ -35,9 +35,10 @@ public class AuditLogRepo {
     }
 
 
-    List<AuditLog> query(String application) {
-        return db.select("select * from audit_log where application=?")
-                .parameter(application)
+    List<AuditLog> query(String org,
+                         String application) {
+        return db.select("select * from audit_log where org=? and application=?")
+                .parameters(org, application)
                 .get(rs -> new AuditLog(rs.getInt("id"),
                         rs.getString("org"),
                         rs.getString("application"),

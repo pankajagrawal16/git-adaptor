@@ -28,8 +28,9 @@ public class AuditLogHandler implements HandlerFunction<ServerResponse> {
     @Override
     public Mono<ServerResponse> handle(ServerRequest request) {
         String repo = request.pathVariable("repo");
+        String org = request.pathVariable("org");
 
-        return Flux.fromStream(auditLogRepo.query(repo).stream())
+        return Flux.fromStream(auditLogRepo.query(org, repo).stream())
                 .collectList()
                 .flatMap((Function<List<AuditLog>, Mono<ServerResponse>>) pullRequests -> {
 
