@@ -22,8 +22,8 @@ public class GitClient {
         ReactorClientHttpConnector connector = new ReactorClientHttpConnector(
                 options -> options.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 2000)
                         .compression(true)
-                        .httpProxy(addressSpec -> addressSpec.host("webguard.posten.no")
-                                .port(8080)
+                        .httpProxy(addressSpec -> addressSpec.host(gitConfig.getProxyHost())
+                                .port(gitConfig.getProxyPort())
                                 .nonProxyHosts(null != System.getProperties().getProperty("https.proxyHost") ? null : "api.github.com"))
                         .afterNettyContextInit(ctx -> {
                             ctx.addHandlerLast(new ReadTimeoutHandler(5000, TimeUnit.MILLISECONDS));
