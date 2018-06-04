@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import reactor.core.publisher.Flux;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -47,5 +48,19 @@ public class AuditLogRepo {
                 .toList()
                 .toBlocking()
                 .first();
+    }
+
+    Flux<AuditLog> queryAll(int limit) {
+        return Flux.fromStream(db.select("select * from audit_log order by queryat desc LIMIT ?")
+                .parameters(limit)
+                .get(rs -> new AuditLog(rs.getInt("id"),
+                        rs.getString("org"),
+                        rs.getString("application"),
+                        rs.getInt("openpr"),
+                        ofInstant(rs.getTimestamp("queryat").toInstant(), systemDefault())))
+                .toList()
+                .toBlocking()
+                .first().stream());
+
     }
 }
