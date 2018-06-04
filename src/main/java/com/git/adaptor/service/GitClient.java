@@ -24,7 +24,7 @@ public class GitClient {
                         .compression(true)
                         .httpProxy(addressSpec -> addressSpec.host("webguard.posten.no")
                                 .port(8080)
-                                .nonProxyHosts("api.github.com"))
+                                .nonProxyHosts(null != System.getProperties().getProperty("https.proxyHost") ? null : "api.github.com"))
                         .afterNettyContextInit(ctx -> {
                             ctx.addHandlerLast(new ReadTimeoutHandler(5000, TimeUnit.MILLISECONDS));
                         }));
