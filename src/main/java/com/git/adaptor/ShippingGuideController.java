@@ -6,6 +6,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.netty.channel.ChannelOption;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
@@ -16,9 +18,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.ParallelFlux;
+import reactor.core.scheduler.Schedulers;
 
 import java.io.IOException;
-import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -26,6 +28,7 @@ import java.util.concurrent.TimeUnit;
 @RequestMapping("/shippingguide/products")
 public class ShippingGuideController {
 
+    private static final Logger LOG = LoggerFactory.getLogger(ShippingGuideController.class);
     private final WebClient webClient;
 
     @Autowired
@@ -58,8 +61,8 @@ public class ShippingGuideController {
     @GetMapping(value = "/prices", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public ParallelFlux<Product> prices(@RequestParam("product") List<String> products) {
         return Flux.fromStream(products.stream())
-                .delayElements(Duration.ofSeconds(1))
                 .parallel()
+                .runOn(Schedulers.parallel())
                 .flatMap(this::callSgParallel);
     }
 
@@ -70,6 +73,7 @@ public class ShippingGuideController {
                 .exchange()
                 .flatMapMany(crs -> crs.bodyToFlux(String.class)
                         .map(s -> {
+                            LOG.info("Response recieved ..... \n {}", s);
                             try {
                                 JsonNode jsonNode = new ObjectMapper().readTree(s);
                                 return new Product(jsonNode.withArray("consignments").get(0).withArray("products").get(0).get("productionCode").asText());
@@ -86,6 +90,7 @@ public class ShippingGuideController {
                 .exchange()
                 .flatMapMany(crs -> crs.bodyToFlux(String.class)
                         .map(s -> {
+                            LOG.info("Response recieved ..... \n {}", s);
                             try {
                                 JsonNode jsonNode = new ObjectMapper().readTree(s);
                                 return new Product(jsonNode.withArray("consignments").get(0).withArray("products").get(0).get("productionCode").asText());
@@ -93,6 +98,6 @@ public class ShippingGuideController {
                                 throw new RuntimeException();
                             }
                         }))
-                .parallel();
+                .parallel().runOn(Schedulers.parallel());
     }
 }
