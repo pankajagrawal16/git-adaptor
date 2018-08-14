@@ -21,6 +21,7 @@ import reactor.core.publisher.ParallelFlux;
 import reactor.core.scheduler.Schedulers;
 
 import java.io.IOException;
+import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -51,20 +52,20 @@ public class ShippingGuideController {
                 .build();
     }
 
-   /* @GetMapping(value = "/prices", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    @GetMapping(value = "/prices", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<Product> pricesFlux(@RequestParam("product") List<String> products) {
         return Flux.fromStream(products.stream())
                 .delayElements(Duration.ofSeconds(1))
                 .flatMap(this::callSg);
-    }*/
+    }
 
-    @GetMapping(value = "/prices", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+   /* @GetMapping(value = "/prices", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public ParallelFlux<Product> prices(@RequestParam("product") List<String> products) {
         return Flux.fromStream(products.stream())
                 .parallel()
                 .runOn(Schedulers.parallel())
                 .flatMap(this::callSgParallel);
-    }
+    }*/
 
     @NotNull
     private Flux<Product> callSg(String product) {
