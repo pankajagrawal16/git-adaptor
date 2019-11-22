@@ -1,0 +1,5 @@
+git:
+  token: xyz
+  proxyHost:
+  proxyPort: 8080
+
