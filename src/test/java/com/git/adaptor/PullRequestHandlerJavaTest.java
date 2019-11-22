@@ -2,6 +2,7 @@ package com.git.adaptor;
 
 import com.git.adaptor.response.ErrorResponse;
 import com.git.adaptor.response.PullRequest;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 @RunWith(SpringRunner.class)
 @WebFluxTest
+@Ignore
 public class PullRequestHandlerJavaTest {
 
     @Autowired

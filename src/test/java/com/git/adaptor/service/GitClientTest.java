@@ -2,6 +2,7 @@ package com.git.adaptor.service;
 
 import com.git.adaptor.gitresponse.pullrequest.OpenPR;
 import com.git.adaptor.gitresponse.reviews.Review;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringRunner.class)
 @WebFluxTest
+@Ignore
 public class GitClientTest {
 
     @Autowired
