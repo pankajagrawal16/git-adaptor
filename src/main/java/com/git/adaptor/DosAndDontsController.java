@@ -36,13 +36,15 @@ public class DosAndDontsController {
                 .build();
     }
 
-    @GetMapping("/say/hello/dont")
+    @GetMapping("/")
     public Mono<String> dontSayHelloLikeThis() {
+
         return Mono.just(restTemplate.getForObject("http://httpbin.org/delay/1", String.class));
     }
 
     @GetMapping("/say/hello/do")
     public Mono<String> sayHelloLikeThis() {
+
         return Mono.fromCallable(() -> restTemplate.getForObject("http://httpbin.org/delay/1", String.class))
                 .subscribeOn(Schedulers.elastic());
     }

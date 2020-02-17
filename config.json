@@ -1,0 +1,6 @@
+{
+  "Parameters": {
+    "DockerImageRepository": "git-adaptor",
+    "ImageTag": "latest"
+  }
+}
